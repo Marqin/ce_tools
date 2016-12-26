@@ -8,7 +8,6 @@ import shutil
 import fnmatch
 import subprocess
 
-os.environ['PATH'] = os.environ['PATH'] + os.pathsep + r"C:\Program Files\7-Zip"
 dll_name = 'Game.dll'
 
 
@@ -91,15 +90,11 @@ def package_assets(project_path, export_path):
         if os.path.isfile(itempath):
             shutil.copyfile(itempath, os.path.join(export_path, 'Assets', itemname))
         else:
-            zip_cmd = ['7z',
-                       'a',
-                       '-r',
-                       '-tzip',
-                       '-mx0',
-                       os.path.join(export_path, 'Assets', '{}.pak'.format(itemname)),
-                       os.path.join(assetpath, 'Assets', itempath)]
-            print('"{}"'.format(' '.join(zip_cmd)))
-            subprocess.check_call(zip_cmd)
+            zip_file = os.path.join(export_path, 'Assets', itemname)
+            path_to_zip = os.path.join(assetpath, 'Assets', itempath)
+            
+            shutil.make_archive(zip_file, "zip", path_to_zip, ".")
+            os.replace("{}.zip".format(zip_file), "{}.pak".format(zip_file))
     return
 
 
